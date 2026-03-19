@@ -276,10 +276,24 @@
     <!-- ⑤ 현장 긴급 접수 보고란 -->
     <div class="card card-emg">
       <div class="sec-lbl sec-lbl-red">🚨 현장 긴급 접수 보고란</div>
-      <div class="field" style="margin-bottom:0">
+      <div class="field">
         <label class="f-label">내용</label>
-        <textarea id="emergencyContent" class="txt-inp"
+        <textarea id="emergencyContent" class="txt-inp" oninput="onEmergencyInput(this)"
           placeholder="약국 내 이상 상황(누수, 시설 문제 등) 확인 시 위험 이슈 등록&#10;찾아보셨을 때 해당 사항 없을 시 비워두셔도 됩니다." rows="4"></textarea>
+      </div>
+      <div class="cond" id="cond-emergencyPhoto">
+        <div class="field" style="margin-bottom:0">
+          <span class="photo-label">📷 현장 사진 등록 (1장)</span>
+          <div class="photo-drop" id="drop-emergency">
+            <input type="file" id="file-emergency" accept="image/*" capture="environment" onchange="previewPhoto(this,'prev-emergency','drop-emergency')">
+            <div class="photo-drop-ico">📷</div>
+            <div class="photo-drop-txt"><span>사진 선택</span> 또는 카메라로 촬영</div>
+          </div>
+          <div class="photo-preview" id="prev-emergency">
+            <img id="prev-emergency-img" src="" alt="미리보기">
+            <button type="button" class="photo-del" onclick="removePhoto('file-emergency','prev-emergency','drop-emergency')">✕ 삭제</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -347,6 +361,9 @@
       if(field==='noEntry')     toggleCond('cond-noEntryPhoto',     val==='Y');
       if(field==='partialMemo') toggleCond('cond-partialMemoPhoto', val==='Y');
       if(field==='recommend')   toggleCond('cond-recommend',        val==='Y');
+    }
+    function onEmergencyInput(el){
+      toggleCond('cond-emergencyPhoto', el.value.trim().length > 0);
     }
     function toggleCond(id,show){
       document.getElementById(id).classList.toggle('open',show);
@@ -432,9 +449,10 @@
       btn.innerHTML='<span class="spin"></span>제출 중...';
       btn.disabled=true;
 
-      const [pNoEntry,pPartial]=await Promise.all([
+      const [pNoEntry,pPartial,pEmergency]=await Promise.all([
         getPhotoBase64('file-noEntry'),
-        getPhotoBase64('file-partialMemo')
+        getPhotoBase64('file-partialMemo'),
+        getPhotoBase64('file-emergency')
       ]);
 
       const submitTime=new Date().toLocaleString('ko-KR');
@@ -452,6 +470,7 @@
         서비스추천여부:   S.recommend||'-',
         추천서비스종류:   S.recommend==='Y'?document.getElementById('recommendService').value:'-',
         긴급접수_내용:    document.getElementById('emergencyContent').value,
+        긴급접수_사진_base64: pEmergency||'',
       };
 
       const gasUrl=localStorage.getItem(LS_GAS)||DEFAULT_GAS_URL;
@@ -496,6 +515,8 @@
       setDeliveryTime();
       removePhoto('file-noEntry','prev-noEntry','drop-noEntry');
       removePhoto('file-partialMemo','prev-partialMemo','drop-partialMemo');
+      removePhoto('file-emergency','prev-emergency','drop-emergency');
+      toggleCond('cond-emergencyPhoto', false);
       Object.keys(S).forEach(k=>S[k]=null);
       document.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('ay','an'));
       document.querySelectorAll('.cond').forEach(c=>c.classList.remove('open'));
