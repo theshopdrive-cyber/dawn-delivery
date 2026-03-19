@@ -303,6 +303,7 @@
   <script>
     /* ── CONFIG ───────────────────────────────── */
     const LS_START='ddpwa_start', LS_GAS='ddpwa_gas';
+    const DEFAULT_GAS_URL='https://script.google.com/macros/s/AKfycbz7nnVh1B7oemTGRrzX5n0d6sJo34uVfFrzXDCLfNWP2S5XXkvEXtxNFtfiB4cOza89/exec';
 
     function loadConfig(){
       document.getElementById('startDateInput').value = localStorage.getItem(LS_START)||'';
@@ -439,7 +440,7 @@
         긴급접수_내용:    document.getElementById('emergencyContent').value,
       };
 
-      const gasUrl=localStorage.getItem(LS_GAS)||'';
+      const gasUrl=localStorage.getItem(LS_GAS)||DEFAULT_GAS_URL;
       try{
         if(gasUrl){
           // no-cors는 응답 확인 불가 → 전송 후 무조건 성공 처리
