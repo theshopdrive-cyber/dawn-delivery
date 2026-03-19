@@ -2,942 +2,425 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0D0F17">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#080e1a">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="배송체크">
-  <title>새벽배송 현장 체크리스트</title>
+  <meta name="apple-mobile-web-app-title" content="새벽배송 체크">
+  <title>현장 서비스 체크</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:           #0D0F17;
-      --surface:      #151821;
-      --surface-2:    #1C1F2E;
-      --surface-3:    #22263A;
-      --accent:       #F97316;
-      --accent-dim:   rgba(249,115,22,0.13);
-      --accent-glow:  rgba(249,115,22,0.25);
-      --text:         #E9EBF5;
-      --text-muted:   #64688A;
-      --text-dim:     #9295B0;
-      --success:      #34D399;
-      --success-dim:  rgba(52,211,153,0.12);
-      --danger:       #F87171;
-      --danger-dim:   rgba(248,113,113,0.12);
-      --warn:         #FBBF24;
-      --warn-dim:     rgba(251,191,36,0.12);
-      --border:       #1E2235;
-      --radius:       14px;
-      --radius-sm:    9px;
+      --bg:#080e1a;--surf:#0f1929;--surf2:#16243a;--surf3:#1d2f4a;
+      --border:#1f3558;--accent:#f59e0b;--glow:rgba(245,158,11,.18);
+      --text:#dde8f5;--muted:#6b88aa;
+      --yes:#22c55e;--yes-bg:rgba(34,197,94,.12);
+      --no:#f87171;--no-bg:rgba(248,113,113,.12);
+      --r:16px;--rs:10px;
     }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-    html { font-size: 16px; scroll-behavior: smooth; }
-
-    body {
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding-bottom: 96px;
-      background-image:
-        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(249,115,22,0.07) 0%, transparent 60%);
-    }
-
-    /* ============= HEADER ============= */
-    .app-header {
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      background: rgba(13,15,23,0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .header-left { display: flex; flex-direction: column; gap: 3px; }
-
-    .header-eyebrow {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 9.5px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-
-    .header-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    .header-right { display: flex; align-items: center; gap: 8px; }
-
-    .header-time {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 11px;
-      color: var(--text-muted);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 5px 11px;
-      white-space: nowrap;
-    }
-
-    /* ============= CONTAINER ============= */
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 18px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    /* ============= SECTION CARD ============= */
-    .section-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: border-color 0.2s;
-    }
-
-    .section-card:focus-within { border-color: rgba(249,115,22,0.2); }
-
-    .section-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 13px 15px;
-      background: var(--surface-2);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-num {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: var(--accent);
-      background: var(--accent-dim);
-      border: 1px solid rgba(249,115,22,0.22);
-      border-radius: 5px;
-      padding: 2px 7px;
-      flex-shrink: 0;
-    }
-
-    .section-num.danger {
-      color: var(--danger);
-      background: var(--danger-dim);
-      border-color: rgba(248,113,113,0.25);
-    }
-
-    .section-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      letter-spacing: -0.015em;
-    }
-
-    .section-body {
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    /* ============= FIELD ============= */
-    .field { display: flex; flex-direction: column; gap: 8px; }
-
-    .field-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-dim);
-      letter-spacing: 0.02em;
-    }
-
-    .field-label .req { color: var(--accent); margin-left: 2px; }
-
-    /* ============= INPUTS ============= */
-    .text-input {
-      width: 100%;
-      background: var(--surface-2);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      color: var(--text);
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 15px;
-      line-height: 1.4;
-      outline: none;
-      transition: border-color 0.18s, box-shadow 0.18s;
-      -webkit-appearance: none;
-    }
-
-    .text-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-dim);
-    }
-
-    .text-input::placeholder { color: var(--text-muted); font-size: 13px; }
-
-    textarea.text-input { resize: vertical; min-height: 90px; }
-
-    input[type="date"].text-input { cursor: pointer; }
-
-    .datetime-pill {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12.5px;
-      color: var(--text-dim);
-      background: var(--surface-2);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 11px 14px;
-      letter-spacing: 0.02em;
-    }
-
-    /* ============= Y/N BUTTONS ============= */
-    .yn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-    .yn-btn {
-      padding: 13px 10px;
-      border-radius: var(--radius-sm);
-      border: 1.5px solid var(--border);
-      background: var(--surface-2);
-      color: var(--text-muted);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.16s ease;
-      text-align: center;
-      -webkit-appearance: none;
-      letter-spacing: 0.02em;
-      user-select: none;
-    }
-
-    .yn-btn:active { transform: scale(0.96); }
-
-    .yn-btn.yes.on {
-      background: var(--success-dim);
-      border-color: var(--success);
-      color: var(--success);
-      box-shadow: 0 0 0 2px rgba(52,211,153,0.1);
-    }
-
-    .yn-btn.no.on {
-      background: var(--danger-dim);
-      border-color: var(--danger);
-      color: var(--danger);
-      box-shadow: 0 0 0 2px rgba(248,113,113,0.1);
-    }
-
-    /* ============= SUB-FIELDS (CONDITIONAL) ============= */
-    .sub-block {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      padding: 13px 13px;
-      background: var(--surface-3);
-      border: 1px solid rgba(249,115,22,0.18);
-      border-left: 3px solid var(--accent);
-      border-radius: var(--radius-sm);
-      animation: slidein 0.2s ease;
-    }
-
-    .sub-block.visible { display: flex; }
-
-    @keyframes slidein {
-      from { opacity: 0; transform: translateY(-6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .sub-hint {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      padding-bottom: 2px;
-    }
-
-    /* ============= CHECKBOXES ============= */
-    .cb-item {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 11px 13px;
-      border-radius: var(--radius-sm);
-      border: 1.5px solid var(--border);
-      background: var(--surface-2);
-      cursor: pointer;
-      transition: all 0.15s;
-      user-select: none;
-    }
-
-    .cb-item:active { transform: scale(0.99); }
-
-    .cb-item.on {
-      border-color: var(--accent);
-      background: var(--accent-dim);
-    }
-
-    .cb-box {
-      width: 21px;
-      height: 21px;
-      border-radius: 6px;
-      border: 2px solid var(--text-muted);
-      background: var(--surface-3);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-      position: relative;
-    }
-
-    .cb-item.on .cb-box {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .cb-check {
-      width: 6px;
-      height: 10px;
-      border-right: 2.5px solid white;
-      border-bottom: 2.5px solid white;
-      transform: rotate(45deg) translate(-0.5px, -1px);
-      display: none;
-    }
-
-    .cb-item.on .cb-check { display: block; }
-
-    .cb-text {
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.4;
-    }
-
-    /* ============= DIVIDER ============= */
-    .sep {
-      height: 1px;
-      background: var(--border);
-      margin: 2px 0;
-    }
-
-    /* ============= EMERGENCY CARD ============= */
-    .emergency-card {
-      border-color: rgba(248,113,113,0.2);
-    }
-
-    .emergency-card .section-head {
-      background: rgba(248,113,113,0.06);
-      border-bottom-color: rgba(248,113,113,0.15);
-    }
-
-    /* ============= SUBMIT AREA ============= */
-    .submit-bar {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      z-index: 200;
-      padding: 12px 16px;
-      padding-bottom: max(12px, env(safe-area-inset-bottom));
-      background: rgba(13,15,23,0.94);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-top: 1px solid var(--border);
-    }
-
-    .submit-btn {
-      width: 100%;
-      max-width: 448px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 15px 20px;
-      background: linear-gradient(135deg, #F97316, #FB923C);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-family: 'IBM Plex Sans KR', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 20px rgba(249,115,22,0.3);
-    }
-
-    .submit-btn:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(249,115,22,0.2); }
-
-    .submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .submit-icon { font-size: 17px; }
-
-    /* ============= TOAST ============= */
-    .toast {
-      position: fixed;
-      top: 72px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-16px);
-      background: var(--surface-3);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 11px 20px;
-      font-size: 13px;
-      color: var(--text);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.25s ease;
-      z-index: 1000;
-      max-width: 340px;
-      width: calc(100% - 32px);
-      text-align: center;
-      white-space: pre-line;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast.ok  { border-color: var(--success); color: var(--success); }
-    .toast.err { border-color: var(--danger);  color: var(--danger);  }
-
-    /* ============= LOADING SPINNER ============= */
-    .spinner {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: none;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ============= HERO TITLE ============= */
-    .hero-banner {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 20px 14px 0;
-    }
-
-    .hero-inner {
-      background: linear-gradient(135deg, rgba(249,115,22,0.12) 0%, rgba(249,115,22,0.04) 100%);
-      border: 1px solid rgba(249,115,22,0.25);
-      border-radius: var(--radius);
-      padding: 20px 20px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-inner::before {
-      content: '';
-      position: absolute;
-      top: -30px; right: -30px;
-      width: 120px; height: 120px;
-      background: radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-sub {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-      opacity: 0.8;
-    }
-
-    .hero-title-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .hero-title-text {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-    }
-
-    .hero-title-text .accent { color: var(--accent); }
-
-    .day-input-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      background: var(--surface-3);
-      border: 1.5px solid rgba(249,115,22,0.3);
-      border-radius: 8px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .day-num-input {
-      width: 52px;
-      padding: 6px 8px;
-      background: transparent;
-      border: none;
-      color: var(--accent);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 17px;
-      font-weight: 700;
-      text-align: center;
-      outline: none;
-      -moz-appearance: textfield;
-    }
-
-    .day-num-input::-webkit-inner-spin-button,
-    .day-num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-
-    .day-unit {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      padding-right: 9px;
-      opacity: 0.8;
-    }
-
-    /* ============= MISC ============= */
-    .note-text {
-      font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      padding: 8px 10px;
-      background: var(--surface-3);
-      border-radius: 6px;
-      border-left: 2px solid var(--text-muted);
-    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html{scroll-behavior:smooth}
+    body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:100px;background-image:radial-gradient(ellipse 60% 40% at 80% 0%,rgba(245,158,11,.06) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 10% 100%,rgba(34,197,94,.04) 0%,transparent 60%)}
+    /* HEADER */
+    .hdr{background:rgba(8,14,26,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:26px 22px 24px;position:sticky;top:0;z-index:100}
+    .hdr-pill{display:inline-flex;align-items:center;gap:6px;background:var(--glow);border:1px solid rgba(245,158,11,.35);border-radius:100px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.8px;margin-bottom:12px}
+    .hdr-pill::before{content:'●';animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .hdr-brand{font-size:12px;font-weight:500;color:var(--accent);letter-spacing:.6px;margin-bottom:5px}
+    .hdr-title{font-size:24px;font-weight:900;line-height:1.3;color:var(--text);letter-spacing:-.4px}
+    .hdr-sub{font-size:11px;color:var(--muted);margin-top:7px;font-family:'DM Mono',monospace}
+    /* CONTAINER */
+    .wrap{max-width:580px;margin:0 auto;padding:20px 14px}
+    /* CARDS */
+    .card{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:20px 18px;margin-bottom:14px;position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent) 0%,transparent 70%)}
+    .card-emg::before{background:linear-gradient(90deg,var(--no) 0%,transparent 70%)}
+    .sec-lbl{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:1.4px;color:var(--accent);text-transform:uppercase;margin-bottom:18px}
+    .sec-lbl-red{color:var(--no)}
+    /* FIELDS */
+    .field{margin-bottom:18px}
+    .field:last-child{margin-bottom:0}
+    .f-label{font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:8px;display:flex;align-items:flex-start;gap:7px;flex-wrap:wrap;line-height:1.5}
+    .f-label .n{width:20px;height:20px;background:var(--surf3);border:1px solid var(--border);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px}
+    .txt-inp{width:100%;background:var(--surf2);border:1px solid var(--border);border-radius:var(--rs);padding:12px 14px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none}
+    .txt-inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+    .txt-inp::placeholder{color:var(--muted);opacity:.5}
+    textarea.txt-inp{resize:vertical;min-height:80px}
+    input[type="datetime-local"].txt-inp{color-scheme:dark;font-size:14px}
+    /* Y/N */
+    .yn-row{display:flex;gap:8px}
+    .yn-btn{flex:1;padding:11px 8px;border-radius:var(--rs);border:1.5px solid var(--border);background:var(--surf2);color:var(--muted);font-family:'DM Mono',monospace;font-size:15px;font-weight:700;cursor:pointer;transition:all .18s cubic-bezier(.4,0,.2,1);letter-spacing:1px;user-select:none}
+    .yn-btn:hover{border-color:var(--muted);color:var(--text)}
+    .yn-btn.ay{background:var(--yes-bg);border-color:var(--yes);color:var(--yes);box-shadow:0 0 12px rgba(34,197,94,.15)}
+    .yn-btn.an{background:var(--no-bg);border-color:var(--no);color:var(--no);box-shadow:0 0 12px rgba(248,113,113,.15)}
+    /* COND */
+    .cond{max-height:0;overflow:hidden;transition:max-height .35s ease,opacity .35s ease;opacity:0}
+    .cond.open{max-height:700px;opacity:1}
+    .cond-inner{background:var(--surf2);border:1px solid var(--border);border-radius:var(--rs);padding:14px;margin-top:10px}
+    /* PHOTO */
+    .photo-upload{margin-top:12px}
+    .photo-label{font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:8px;display:block}
+    .photo-drop{border:1.5px dashed var(--border);border-radius:var(--rs);background:var(--surf);padding:18px 14px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+    .photo-drop:hover{border-color:var(--accent);background:rgba(245,158,11,.04)}
+    .photo-drop input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .photo-drop-ico{font-size:22px;margin-bottom:6px}
+    .photo-drop-txt{font-size:12px;color:var(--muted)}
+    .photo-drop-txt span{color:var(--accent);font-weight:600}
+    .photo-preview{margin-top:10px;border-radius:var(--rs);overflow:hidden;display:none;position:relative}
+    .photo-preview img{width:100%;display:block;border-radius:var(--rs);border:1px solid var(--border);max-height:220px;object-fit:cover}
+    .photo-del{position:absolute;top:8px;right:8px;background:rgba(8,14,26,.85);border:1px solid var(--border);border-radius:6px;color:var(--no);font-size:12px;font-weight:700;padding:4px 8px;cursor:pointer}
+    /* SELECT */
+    .sel{width:100%;background:var(--surf2);border:1px solid var(--border);border-radius:var(--rs);padding:12px 36px 12px 14px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;cursor:pointer;transition:border-color .2s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b88aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+    .sel:focus{border-color:var(--accent)}
+    .sel option{background:var(--surf)}
+    hr{border:none;border-top:1px solid var(--border);margin:16px 0}
+    /* SUBMIT */
+    .sub-btn{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:var(--r);color:#070c15;font-family:'Noto Sans KR',sans-serif;font-size:16px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 6px 24px rgba(245,158,11,.25);letter-spacing:.3px}
+    .sub-btn:hover{box-shadow:0 8px 30px rgba(245,158,11,.4);transform:translateY(-1px)}
+    .sub-btn:active{transform:scale(.98)}
+    .sub-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(7,12,21,.25);border-top-color:#070c15;border-radius:50%;animation:rot .6s linear infinite;vertical-align:middle;margin-right:6px}
+    @keyframes rot{to{transform:rotate(360deg)}}
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f1929;border:1px solid var(--yes);color:var(--yes);padding:13px 22px;border-radius:100px;font-size:13.5px;font-weight:600;transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:200;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+    .toast.err{border-color:var(--no);color:var(--no)}
+    .toast.on{transform:translateX(-50%) translateY(0)}
+    /* CFG */
+    .cfg-toggle{position:fixed;top:16px;right:14px;width:32px;height:32px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:200;font-size:15px;transition:background .2s}
+    .cfg-toggle:hover{background:var(--surf3)}
+    .cfg-panel{position:fixed;top:56px;right:14px;background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:16px;width:250px;z-index:200;display:none;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+    .cfg-panel.open{display:block}
+    .cfg-save{width:100%;margin-top:10px;padding:9px;background:var(--accent);border:none;border-radius:var(--rs);color:#070c15;font-weight:700;font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer}
+    .req{color:var(--no);margin-left:2px}
+    /* REQUIRED Y/N HIGHLIGHT */
+    .yn-row.req-err .yn-btn{border-color:var(--no)!important;animation:shake .4s ease}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
   </style>
 </head>
 <body>
-
-<!-- ============= HEADER ============= -->
-<header class="app-header">
-  <div class="header-left">
-    <span class="header-eyebrow">Service Master · Dawn Delivery</span>
-    <span class="header-title">새벽배송 현장 체크리스트</span>
-  </div>
-  <div class="header-right">
-    <span class="header-time" id="headerTime">--</span>
-  </div>
-</header>
-
-
-
-  <!-- ====== HERO TITLE ====== -->
-<div class="hero-banner">
-  <div class="hero-inner">
-    <span class="hero-sub">Service Master · Dawn Delivery Checklist</span>
-    <div class="hero-title-row">
-      <span class="hero-title-text">현장에서 고객 감동 주기</span>
-      <div class="day-input-wrap">
-        <input type="number" id="dayCount" class="day-num-input" min="1" max="999" value="1" placeholder="1">
-        <span class="day-unit">일차</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="container">
-
-<!-- ====== 01 기본 정보 ====== -->
-  <div class="section-card">
-    <div class="section-head">
-      <span class="section-num">01</span>
-      <span class="section-label">기본 정보</span>
-    </div>
-    <div class="section-body">
-
-      <div class="field">
-        <label class="field-label">담당자 (서비스마스터) <span class="req">*</span></label>
-        <input type="text" id="manager" class="text-input" placeholder="이름을 입력하세요" autocomplete="name">
-      </div>
-
-      <div class="field">
-        <label class="field-label">약국명 <span class="req">*</span></label>
-        <input type="text" id="pharmacyName" class="text-input" placeholder="방문한 약국명을 입력하세요">
-      </div>
-
-      <div class="field">
-        <label class="field-label">방문 일시</label>
-        <div class="datetime-pill" id="visitDateTime">—</div>
-      </div>
-
-    </div>
+  <div class="cfg-toggle" id="cfgBtn" title="설정">⚙</div>
+  <div class="cfg-panel" id="cfgPanel">
+    <div class="f-label" style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px">시작 날짜 설정</div>
+    <input type="date" class="txt-inp" id="startDateInput" style="font-size:13px;padding:9px 12px;">
+    <div class="f-label" style="font-size:11px;color:var(--muted);display:block;margin:12px 0 6px">GAS Web App URL</div>
+    <input type="text" class="txt-inp" id="gasUrlInput" placeholder="https://script.google.com/..." style="font-size:12px;padding:9px 12px;">
+    <button class="cfg-save" onclick="saveConfig()">저장</button>
   </div>
 
-  <!-- ====== 02 신규 주문 여부 ====== -->
-  <div class="section-card">
-    <div class="section-head">
-      <span class="section-num">02</span>
-      <span class="section-label">신규 주문 여부</span>
-    </div>
-    <div class="section-body">
+  <header class="hdr">
+    <div class="hdr-pill">더샵플러스 새벽배송</div>
+    <div class="hdr-brand">THE SHOP PLUS</div>
+    <h1 class="hdr-title">현장에서 고객 감동 주기</h1>
+    <div class="hdr-sub" id="todayStr">Loading...</div>
+  </header>
 
-      <div class="field">
-        <label class="field-label">신규 주문이 있었나요?</label>
-        <div class="yn-group">
-          <button class="yn-btn yes" data-key="isNewOrder" data-val="Y" onclick="pickYN(this)">Y · 있음</button>
-          <button class="yn-btn no"  data-key="isNewOrder" data-val="N" onclick="pickYN(this)">N · 없음</button>
-        </div>
-      </div>
+  <div class="wrap">
+    <form id="mainForm" novalidate>
 
-      <!-- 조건부: 신규 주문 Y일 때 -->
-      <div class="sub-block" id="sub_idCard">
-        <p class="sub-hint">📋 신규 주문 시 — ID 카드 전달 여부를 선택해주세요</p>
-        <div class="yn-group">
-          <button class="yn-btn yes" data-key="idCardDelivered" data-val="Y" onclick="pickYN(this)">Y · 전달 완료</button>
-          <button class="yn-btn no"  data-key="idCardDelivered" data-val="N" onclick="pickYN(this)">N · 미전달</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ====== 03 서비스 수행 현황 ====== -->
-  <div class="section-card">
-    <div class="section-head">
-      <span class="section-num">03</span>
-      <span class="section-label">서비스 수행 현황</span>
-    </div>
-    <div class="section-body">
-
-      <div class="field">
-        <label class="field-label">신청 서비스 모두 수행 완료 여부</label>
-        <div class="yn-group">
-          <button class="yn-btn yes" data-key="allServicesCompleted" data-val="Y" onclick="pickYN(this)">Y · 완료</button>
-          <button class="yn-btn no"  data-key="allServicesCompleted" data-val="N" onclick="pickYN(this)">N · 미완료</button>
-        </div>
-      </div>
-
-      <!-- 조건부: 미완료 N일 때 -->
-      <div class="sub-block" id="sub_notCompleted">
-        <p class="sub-hint">⚠️ 미완료 사유와 처리 결과를 상세히 입력해주세요</p>
+      <!-- ① 기본 정보 -->
+      <div class="card">
+        <div class="sec-lbl">기본 정보</div>
         <div class="field">
-          <label class="field-label">미완료 사유</label>
-          <textarea id="notCompletedReason" class="text-input" placeholder="수행하지 못한 이유를 입력하세요..." style="min-height:80px;"></textarea>
+          <label class="f-label"><span class="n">1</span> 약국명 <span class="req">*</span></label>
+          <input id="pharmacyName" type="text" class="txt-inp" placeholder="약국명을 입력하세요" required>
         </div>
+        <div class="field" style="margin-bottom:0">
+          <label class="f-label">배송 일시</label>
+          <input id="visitDate" type="datetime-local" class="txt-inp">
+        </div>
+      </div>
+
+      <!-- ② 수행 체크리스트 -->
+      <div class="card">
+        <div class="sec-lbl">수행 체크리스트</div>
+        <div class="field" style="margin-bottom:0">
+          <label class="f-label"><span class="n">2</span> 첫 주문 여부 <span class="req">*</span></label>
+          <div class="yn-row" id="grp-newOrder">
+            <button type="button" class="yn-btn" onclick="pick('newOrder','Y',this)">Y</button>
+            <button type="button" class="yn-btn" onclick="pick('newOrder','N',this)">N</button>
+          </div>
+          <div class="cond" id="cond-idCard">
+            <div class="cond-inner">
+              <label class="f-label"><span class="n">3</span> ID 카드 전달 여부</label>
+              <div class="yn-row" id="grp-idCard">
+                <button type="button" class="yn-btn" onclick="pick('idCard','Y',this)">Y</button>
+                <button type="button" class="yn-btn" onclick="pick('idCard','N',this)">N</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ 예외 문제 발생 카테고리 -->
+      <div class="card">
+        <div class="sec-lbl">예외 문제 발생 카테고리</div>
+
         <div class="field">
-          <label class="field-label">처리 결과</label>
-          <textarea id="notCompletedResult" class="text-input" placeholder="현장에서 어떻게 처리했는지 결과를 입력하세요..." style="min-height:80px;"></textarea>
+          <label class="f-label">
+            <span class="n">3</span>
+            약국 출입 불가 &mdash; 배송실패 사유를 메모지에 작성, 문앞 부착 수행 여부 <span class="req">*</span>
+          </label>
+          <div class="yn-row" id="grp-noEntry">
+            <button type="button" class="yn-btn" onclick="pick('noEntry','Y',this)">Y</button>
+            <button type="button" class="yn-btn" onclick="pick('noEntry','N',this)">N</button>
+          </div>
+          <div class="cond" id="cond-noEntryPhoto">
+            <div class="photo-upload">
+              <span class="photo-label">📷 현장 사진 등록 (1장)</span>
+              <div class="photo-drop" id="drop-noEntry">
+                <input type="file" id="file-noEntry" accept="image/*" capture="environment" onchange="previewPhoto(this,'prev-noEntry','drop-noEntry')">
+                <div class="photo-drop-ico">📷</div>
+                <div class="photo-drop-txt"><span>사진 선택</span> 또는 카메라로 촬영</div>
+              </div>
+              <div class="photo-preview" id="prev-noEntry">
+                <img id="prev-noEntry-img" src="" alt="미리보기">
+                <button type="button" class="photo-del" onclick="removePhoto('file-noEntry','prev-noEntry','drop-noEntry')">✕ 삭제</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="field">
+          <label class="f-label">
+            <span class="n">4</span>
+            배송 위치 변경 &mdash; 이슈 발생 여부 <span class="req">*</span>
+          </label>
+          <div class="yn-row" id="grp-locationChange">
+            <button type="button" class="yn-btn" onclick="pick('locationChange','Y',this)">Y</button>
+            <button type="button" class="yn-btn" onclick="pick('locationChange','N',this)">N</button>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="field" style="margin-bottom:0">
+          <label class="f-label">
+            <span class="n">5</span>
+            신청 서비스 일부 미수행/불가 &mdash; 처리 결과 및 사유를 안내 메모에 작성 여부 <span class="req">*</span>
+          </label>
+          <div class="yn-row" id="grp-partialMemo">
+            <button type="button" class="yn-btn" onclick="pick('partialMemo','Y',this)">Y</button>
+            <button type="button" class="yn-btn" onclick="pick('partialMemo','N',this)">N</button>
+          </div>
+          <div class="cond" id="cond-partialMemoPhoto">
+            <div class="photo-upload">
+              <span class="photo-label">📷 현장 사진 등록 (1장)</span>
+              <div class="photo-drop" id="drop-partialMemo">
+                <input type="file" id="file-partialMemo" accept="image/*" capture="environment" onchange="previewPhoto(this,'prev-partialMemo','drop-partialMemo')">
+                <div class="photo-drop-ico">📷</div>
+                <div class="photo-drop-txt"><span>사진 선택</span> 또는 카메라로 촬영</div>
+              </div>
+              <div class="photo-preview" id="prev-partialMemo">
+                <img id="prev-partialMemo-img" src="" alt="미리보기">
+                <button type="button" class="photo-del" onclick="removePhoto('file-partialMemo','prev-partialMemo','drop-partialMemo')">✕ 삭제</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-    </div>
+      <!-- ④ 서비스 추천 카테고리 -->
+      <div class="card">
+        <div class="sec-lbl">서비스 추천 카테고리</div>
+        <div class="field" style="margin-bottom:0">
+          <label class="f-label"><span class="n">6</span> 서비스 추천 여부 <span class="req">*</span></label>
+          <div class="yn-row" id="grp-recommend">
+            <button type="button" class="yn-btn" onclick="pick('recommend','Y',this)">Y</button>
+            <button type="button" class="yn-btn" onclick="pick('recommend','N',this)">N</button>
+          </div>
+          <div class="cond" id="cond-recommend">
+            <div class="cond-inner">
+              <label class="f-label" style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px">추천 서비스 종류 선택</label>
+              <select id="recommendService" class="sel">
+                <option value="">-- 추천 서비스를 선택하세요 --</option>
+                <option value="포장재 회수 서비스 추천 메모지">📦 포장재 회수 서비스 추천 메모지</option>
+                <option value="가운 세탁 서비스 추천 메모지">🧥 가운 세탁 서비스 추천 메모지</option>
+                <option value="폐의약품 수거 서비스 추천 메모지">💊 폐의약품 수거 서비스 추천 메모지</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑤ 현장 긴급 접수 보고란 -->
+      <div class="card card-emg">
+        <div class="sec-lbl sec-lbl-red">🚨 현장 긴급 접수 보고란</div>
+        <div class="field" style="margin-bottom:0">
+          <label class="f-label">내용</label>
+          <textarea id="emergencyContent" class="txt-inp"
+            placeholder="약국 내 이상 상황(누수, 시설 문제 등) 확인 시 위험 이슈 등록&#10;찾아보셨을 때 해당 사항 없을 시 비워두셔도 됩니다." rows="4"></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="sub-btn" id="submitBtn">제출하기</button>
+    </form>
   </div>
 
-  <!-- ====== 04 예외 문제 발생 ====== -->
-  <div class="section-card">
-    <div class="section-head">
-      <span class="section-num">04</span>
-      <span class="section-label">예외 문제 발생 카테고리</span>
-    </div>
-    <div class="section-body">
+  <div class="toast" id="toast"></div>
 
-      <!-- 4-1 약국 출입 불가 -->
-      <div class="field">
-        <label class="field-label">약국 출입 불가 발생 여부</label>
-        <div class="yn-group">
-          <button class="yn-btn yes" data-key="accessDenied" data-val="Y" onclick="pickYN(this)">Y · 발생</button>
-          <button class="yn-btn no"  data-key="accessDenied" data-val="N" onclick="pickYN(this)">N · 해당없음</button>
-        </div>
-      </div>
+  <script>
+    const LS_START='ddpwa_start', LS_GAS='ddpwa_gas';
 
-      <!-- 조건부: 출입 불가 Y -->
-      <div class="sub-block" id="sub_failureMemo">
-        <p class="sub-hint">🚪 출입 불가 시 — 배송실패 사유를 메모지에 작성하여 문앞에 부착했나요?</p>
-        <div class="yn-group">
-          <button class="yn-btn yes" data-key="failureMemoAttached" data-val="Y" onclick="pickYN(this)">Y · 부착 완료</button>
-          <button class="yn-btn no"  data-key="failureMemoAttached" data-val="N" onclick="pickYN(this)">N · 미부착</button>
-        </div>
-      </div>
+    function loadConfig(){
+      document.getElementById('startDateInput').value=localStorage.getItem(LS_START)||'';
+      document.getElementById('gasUrlInput').value=localStorage.getItem(LS_GAS)||'';
+    }
+    function saveConfig(){
+      const s=document.getElementById('startDateInput').value;
+      const g=document.getElementById('gasUrlInput').value.trim();
+      if(s)localStorage.setItem(LS_START,s);
+      if(g)localStorage.setItem(LS_GAS,g);
+      document.getElementById('cfgPanel').classList.remove('open');
+      initHeader();
+      showToast('✅ 설정이 저장되었습니다');
+    }
 
-      <div class="sep"></div>
+    function initHeader(){
+      const today=new Date();
+      const wd=['일','월','화','수','목','금','토'];
+      const ds=`${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')} (${wd[today.getDay()]})`;
+      document.getElementById('todayStr').textContent=ds;
+    }
 
-      <!-- 4-2 배송 위치 변경 -->
-      <div class="field">
-        <label class="field-label">배송 위치 변경 이슈 발생 여부</label>
-        <div class="yn-group">
-          <button class="yn-btn yes" data-key="locationIssue" data-val="Y" onclick="pickYN(this)">Y · 이슈 발생</button>
-          <button class="yn-btn no"  data-key="locationIssue" data-val="N" onclick="pickYN(this)">N · 이슈 없음</button>
-        </div>
-      </div>
+    function nowLocalISO(){
+      const d=new Date(),pad=n=>String(n).padStart(2,'0');
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
 
-    </div>
-  </div>
+    const S={newOrder:null,idCard:null,noEntry:null,locationChange:null,partialMemo:null,recommend:null};
 
-  <!-- ====== 05 서비스 추천 ====== -->
-  <div class="section-card">
-    <div class="section-head">
-      <span class="section-num">05</span>
-      <span class="section-label">서비스 추천</span>
-    </div>
-    <div class="section-body">
+    function pick(field,val,btn){
+      S[field]=val;
+      document.getElementById('grp-'+field).querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('ay','an'));
+      btn.classList.add(val==='Y'?'ay':'an');
+      if(field==='newOrder')    toggle('cond-idCard',           val==='Y');
+      if(field==='noEntry')     toggle('cond-noEntryPhoto',     val==='Y');
+      if(field==='partialMemo') toggle('cond-partialMemoPhoto', val==='Y');
+      if(field==='recommend')   toggle('cond-recommend',        val==='Y');
+    }
+    function toggle(id,show){document.getElementById(id).classList.toggle('open',show)}
 
-      <div class="field">
-        <label class="field-label">추가 서비스 추천 여부</label>
-        <div class="yn-group">
-          <button class="yn-btn yes" data-key="recommended" data-val="Y" onclick="pickYN(this)">Y · 추천 완료</button>
-          <button class="yn-btn no"  data-key="recommended" data-val="N" onclick="pickYN(this)">N · 미추천</button>
-        </div>
-      </div>
+    function previewPhoto(input,previewId,dropId){
+      const file=input.files[0]; if(!file)return;
+      const reader=new FileReader();
+      reader.onload=e=>{
+        document.getElementById(previewId+'-img').src=e.target.result;
+        document.getElementById(previewId).style.display='block';
+        document.getElementById(dropId).style.display='none';
+      };
+      reader.readAsDataURL(file);
+    }
+    function removePhoto(fileId,previewId,dropId){
+      document.getElementById(fileId).value='';
+      document.getElementById(previewId).style.display='none';
+      document.getElementById(dropId).style.display='block';
+    }
+    function getPhotoBase64(fileId){
+      return new Promise(resolve=>{
+        const file=document.getElementById(fileId).files[0];
+        if(!file){resolve('');return;}
+        const reader=new FileReader();
+        reader.onload=e=>resolve(e.target.result.split(',')[1]);
+        reader.readAsDataURL(file);
+      });
+    }
 
-      <!-- 조건부: 추천 Y -->
-      <div class="sub-block" id="sub_recommend">
-        <p class="sub-hint">📌 추천한 서비스 메모지를 모두 선택해주세요</p>
-        <div class="cb-item" id="cb_packaging" onclick="toggleCb('cb_packaging', 'rec_packaging')">
-          <div class="cb-box"><div class="cb-check"></div></div>
-          <span class="cb-text">📦 포장재 회수 서비스 추천 메모지</span>
-        </div>
-        <div class="cb-item" id="cb_laundry" onclick="toggleCb('cb_laundry', 'rec_laundry')">
-          <div class="cb-box"><div class="cb-check"></div></div>
-          <span class="cb-text">🥼 가운 세탁 서비스 추천 메모지</span>
-        </div>
-        <div class="cb-item" id="cb_disposal" onclick="toggleCb('cb_disposal', 'rec_disposal')">
-          <div class="cb-box"><div class="cb-check"></div></div>
-          <span class="cb-text">💊 폐의약품 수거 서비스 추천 메모지</span>
-        </div>
-      </div>
+    document.getElementById('mainForm').addEventListener('submit',async e=>{
+      e.preventDefault();
 
-    </div>
-  </div>
+      // ── 필수값 검사 ─────────────────────────────
+      const pName=document.getElementById('pharmacyName').value.trim();
+      if(!pName){showToast('❌ 약국명을 입력해주세요',true);scrollTo('pharmacyName');return;}
 
-  <!-- ====== 06 현장 긴급 접수 보고 ====== -->
-  <div class="section-card emergency-card">
-    <div class="section-head">
-      <span class="section-num danger">06</span>
-      <span class="section-label">🚨 현장 긴급 접수 보고</span>
-    </div>
-    <div class="section-body">
+      const REQUIRED=[
+        {key:'newOrder',     label:'첫 주문 여부',        grp:'grp-newOrder'},
+        {key:'noEntry',      label:'약국 출입 불가',       grp:'grp-noEntry'},
+        {key:'locationChange',label:'배송 위치 변경',     grp:'grp-locationChange'},
+        {key:'partialMemo',  label:'신청 서비스',          grp:'grp-partialMemo'},
+        {key:'recommend',    label:'서비스 추천 여부',     grp:'grp-recommend'},
+      ];
 
-      <p class="note-text">긴급 상황 발생 시에만 작성하세요. 해당 없으면 비워두셔도 됩니다.</p>
+      for(const r of REQUIRED){
+        if(S[r.key]===null){
+          showToast(`❌ '${r.label}' 선택이 필요합니다`,true);
+          const grp=document.getElementById(r.grp);
+          grp.classList.remove('req-err');
+          void grp.offsetWidth; // reflow for animation replay
+          grp.classList.add('req-err');
+          grp.scrollIntoView({behavior:'smooth',block:'center'});
+          setTimeout(()=>grp.classList.remove('req-err'),600);
+          return;
+        }
+      }
 
-      <div class="field">
-        <label class="field-label">일자</label>
-        <input type="date" id="emergencyDate" class="text-input">
-      </div>
-
-      <div class="field">
-        <label class="field-label">내용</label>
-        <textarea id="emergencyContent" class="text-input" placeholder="긴급 상황 내용을 상세히 입력하세요..." style="min-height:110px;"></textarea>
-      </div>
-
-    </div>
-  </div>
-
-</div><!-- /container -->
-
-<!-- ====== 제출 버튼 ====== -->
-<div class="submit-bar">
-  <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
-    <div class="spinner" id="spinner"></div>
-    <span class="submit-icon" id="submitIcon">✓</span>
-    <span id="submitText">체크리스트 제출</span>
-  </button>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<!-- Hidden checkbox state -->
-<input type="checkbox" id="rec_packaging" style="display:none">
-<input type="checkbox" id="rec_laundry"   style="display:none">
-<input type="checkbox" id="rec_disposal"  style="display:none">
-
-<script>
-/* =========================================================
-   ⚙️  CONFIG — 아래 URL을 Google Apps Script 배포 URL로 교체하세요
-   ========================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbya1OZMyLoqXJxq7EMbW3OAOOrA67ZGxbbGAadjP3O8vX7kArYQh16uuwSL9YrDhDd3/exec';
-
-/* =========================================================
-   STATE
-   ========================================================= */
-const state = {};
-
-/* =========================================================
-   INIT
-   ========================================================= */
-function init() {
-  const now = new Date();
-  const kDate = now.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' });
-  const kTime = now.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
-  const full  = `${kDate} ${kTime}`;
-
-  document.getElementById('headerTime').textContent   = kDate;
-  document.getElementById('visitDateTime').textContent = full;
-  document.getElementById('emergencyDate').value       = now.toISOString().split('T')[0];
-  state.visitDateTime = full;
-
-  // Clock tick
-  setInterval(() => {
-    const n = new Date();
-    document.getElementById('headerTime').textContent =
-      n.toLocaleDateString('ko-KR', { month:'2-digit', day:'2-digit' }) + ' ' +
-      n.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
-  }, 30000);
-}
-
-/* =========================================================
-   Y/N BUTTON
-   ========================================================= */
-function pickYN(btn) {
-  const key = btn.dataset.key;
-  const val = btn.dataset.val;
-
-  // Deselect siblings
-  btn.parentElement.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  state[key] = val;
-
-  // Conditional sub-blocks
-  const map = {
-    isNewOrder:           'sub_idCard',
-    accessDenied:         'sub_failureMemo',
-    allServicesCompleted: 'sub_notCompleted',
-    recommended:          'sub_recommend',
-  };
-  if (map[key]) {
-    // allServicesCompleted shows sub-block only when N
-    const showOn = key === 'allServicesCompleted' ? 'N' : 'Y';
-    document.getElementById(map[key]).classList.toggle('visible', val === showOn);
-  }
-}
-
-/* =========================================================
-   CHECKBOX
-   ========================================================= */
-function toggleCb(divId, cbId) {
-  const div = document.getElementById(divId);
-  const cb  = document.getElementById(cbId);
-  div.classList.toggle('on');
-  cb.checked = div.classList.contains('on');
-}
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-function toast(msg, type = '') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = `toast ${type} show`;
-  setTimeout(() => el.className = 'toast', 3200);
-}
-
-/* =========================================================
-   SUBMIT
-   ========================================================= */
-async function handleSubmit() {
-  const manager      = document.getElementById('manager').value.trim();
-  const pharmacyName = document.getElementById('pharmacyName').value.trim();
-
-  if (!pharmacyName) {
-    toast('⚠️ 약국명을 입력해주세요', 'err');
-    document.getElementById('pharmacyName').focus();
-    return;
-  }
-
-  // Collect recommended services
-  const recList = [];
-  if (document.getElementById('rec_packaging').checked) recList.push('포장재 회수');
-  if (document.getElementById('rec_laundry').checked)   recList.push('가운 세탁');
-  if (document.getElementById('rec_disposal').checked)  recList.push('폐의약품 수거');
-
-  const payload = {
-    ...state,
-    dayCount:             document.getElementById('dayCount').value,
-    manager,
-    pharmacyName,
-    notCompletedReason:   document.getElementById('notCompletedReason').value.trim(),
-    notCompletedResult:   document.getElementById('notCompletedResult').value.trim(),
-    recommendedServices:  recList.join(', '),
-    emergencyDate:        document.getElementById('emergencyDate').value,
-    emergencyContent:     document.getElementById('emergencyContent').value.trim(),
-  };
-
-  // Dev mode: no GAS URL set yet
-  if (GAS_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
-    console.table(payload);
-    toast('⚙️ GAS URL 미설정 — 콘솔에서 데이터 확인', 'err');
-    return;
-  }
-
-  // Submit
-  setLoading(true);
-  try {
-    await fetch(GAS_URL, {
-      method: 'POST',
-      mode:   'no-cors',           // GAS CORS 우회 (데이터는 정상 저장됨)
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
+      const btn=document.getElementById('submitBtn');
+      btn.innerHTML='<span class="spin"></span>제출 중...';
+      btn.disabled=true;
+      const [pNoEntry,pPartial]=await Promise.all([getPhotoBase64('file-noEntry'),getPhotoBase64('file-partialMemo')]);
+      const payload={
+        제출일시:new Date().toLocaleString('ko-KR'),
+        약국명:pName,
+        배송일시:document.getElementById('visitDate').value,
+        첫주문여부:S.newOrder||'-',
+        ID카드전달여부:S.newOrder==='Y'?(S.idCard||'-'):'해당없음',
+        약국출입불가_메모부착:S.noEntry||'-',
+        출입불가_사진_base64:pNoEntry||'',
+        배송위치변경_이슈:S.locationChange||'-',
+        미수행안내메모작성:S.partialMemo||'-',
+        미수행_사진_base64:pPartial||'',
+        서비스추천여부:S.recommend||'-',
+        추천서비스종류:S.recommend==='Y'?document.getElementById('recommendService').value:'-',
+        긴급접수_내용:document.getElementById('emergencyContent').value,
+      };
+      const gasUrl=localStorage.getItem(LS_GAS)||'';
+      try{
+        if(!gasUrl){console.table(payload);await delay(700);showToast('✅ [데모] 데이터 확인 완료 (GAS URL 미설정)');}
+        else{
+          await fetch(gasUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+          showToast('✅ 구글 시트에 저장되었습니다!');
+        }
+        resetForm();
+      }catch(err){console.error(err);showToast('❌ 제출 실패. 네트워크를 확인해주세요.',true);}
+      btn.innerHTML='제출하기';btn.disabled=false;
     });
 
-    toast('✅ 체크리스트가 제출되었습니다!', 'ok');
-    setTimeout(() => {
-      if (confirm('다음 약국 체크를 위해 양식을 초기화할까요?')) location.reload();
-    }, 1400);
+    function resetForm(){
+      document.getElementById('pharmacyName').value='';
+      document.getElementById('emergencyContent').value='';
+      document.getElementById('recommendService').value='';
+      document.getElementById('visitDate').value=nowLocalISO();
+      removePhoto('file-noEntry','prev-noEntry','drop-noEntry');
+      removePhoto('file-partialMemo','prev-partialMemo','drop-partialMemo');
+      Object.keys(S).forEach(k=>S[k]=null);
+      document.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('ay','an'));
+      document.querySelectorAll('.cond').forEach(c=>c.classList.remove('open'));
+    }
 
-  } catch (err) {
-    console.error(err);
-    toast('❌ 제출 실패. 네트워크를 확인하고 다시 시도해주세요.', 'err');
-  } finally {
-    setLoading(false);
-  }
-}
+    let toastTimer;
+    function showToast(msg,isErr=false){
+      const t=document.getElementById('toast');
+      t.textContent=msg;t.className='toast'+(isErr?' err':'');
+      requestAnimationFrame(()=>t.classList.add('on'));
+      clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('on'),3200);
+    }
 
-function setLoading(on) {
-  const btn  = document.getElementById('submitBtn');
-  const spin = document.getElementById('spinner');
-  const icon = document.getElementById('submitIcon');
-  const text = document.getElementById('submitText');
+    document.getElementById('cfgBtn').addEventListener('click',e=>{e.stopPropagation();document.getElementById('cfgPanel').classList.toggle('open')});
+    document.addEventListener('click',e=>{
+      if(!document.getElementById('cfgPanel').contains(e.target)&&e.target!==document.getElementById('cfgBtn'))
+        document.getElementById('cfgPanel').classList.remove('open');
+    });
 
-  btn.disabled    = on;
-  spin.style.display = on ? 'block' : 'none';
-  icon.style.display = on ? 'none'  : 'block';
-  text.textContent   = on ? '제출 중...' : '체크리스트 제출';
-}
-
-/* =========================================================
-   SERVICE WORKER
-   ========================================================= */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(r => console.log('[SW] 등록 완료:', r.scope))
-      .catch(e => console.warn('[SW] 등록 실패:', e));
-  });
-}
-
-init();
-</script>
+    function scrollTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'center'})}
+    function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+    loadConfig();initHeader();
+    document.getElementById('visitDate').value=nowLocalISO();
+    if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(console.error);
+  </script>
 </body>
 </html>
