@@ -153,6 +153,9 @@
         <label class="f-label"><span class="n">1</span> 약국명 <span class="req">*</span></label>
         <input id="pharmacyName" type="text" class="txt-inp" placeholder="약국명을 입력하세요">
       </div>
+      <div class="field">
+        <label class="f-label">지역구</label>
+        <input id="districtName" type="text" class="txt-inp" placeholder="예) 강남구, 마포구">
       <div class="field" style="margin-bottom:0">
         <label class="f-label">배송 일시</label>
         <div id="visitDateDisplay" class="txt-inp readonly" style="font-family:'DM Mono',monospace;font-size:14px"></div>
@@ -459,6 +462,7 @@
       const payload={
         제출일시:         submitTime,
         약국명:           pName,
+        지역구:           document.getElementById('districtName').value.trim(),
         배송일시:         deliveryTime,
         첫주문여부:       S.newOrder||'-',
         ID카드전달여부:   S.newOrder==='Y'?(S.idCard||'-'):'해당없음',
@@ -510,6 +514,7 @@
     }
     function resetForm(){
       document.getElementById('pharmacyName').value='';
+      document.getElementById('districtName').value='';
       document.getElementById('emergencyContent').value='';
       document.getElementById('recommendService').value='';
       setDeliveryTime();
