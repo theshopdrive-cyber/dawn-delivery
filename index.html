@@ -76,12 +76,9 @@
     /* PHOTO */
     .photo-upload{margin-top:12px}
     .photo-label{font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:8px;display:block}
-    .photo-drop{border:1.5px dashed var(--border);border-radius:var(--rs);background:var(--surf);padding:18px 14px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
-    .photo-drop:hover{border-color:var(--accent);background:rgba(245,158,11,.04)}
-    .photo-drop input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-    .photo-drop-ico{font-size:22px;margin-bottom:6px}
-    .photo-drop-txt{font-size:12px;color:var(--muted)}
-    .photo-drop-txt span{color:var(--accent);font-weight:600}
+    .photo-btn-row{display:flex;gap:8px;margin-bottom:10px}
+    .photo-src-btn{flex:1;padding:11px 8px;border-radius:var(--rs);border:1.5px dashed var(--border);background:var(--surf2);color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;text-align:center}
+    .photo-src-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(245,158,11,.06)}
     .photo-preview{margin-top:10px;border-radius:var(--rs);overflow:hidden;display:none;position:relative}
     .photo-preview img{width:100%;display:block;border-radius:var(--rs);border:1px solid var(--border);max-height:220px;object-fit:cover}
     .photo-del{position:absolute;top:8px;right:8px;background:rgba(8,14,26,.85);border:1px solid var(--border);border-radius:6px;color:var(--no);font-size:12px;font-weight:700;padding:4px 8px;cursor:pointer}
@@ -199,14 +196,14 @@
         <div class="cond" id="cond-noEntryPhoto">
           <div class="photo-upload">
             <span class="photo-label">📷 현장 사진 등록 (1장)</span>
-            <div class="photo-drop" id="drop-noEntry">
-              <input type="file" id="file-noEntry" accept="image/*" capture="environment" onchange="previewPhoto(this,'prev-noEntry','drop-noEntry')">
-              <div class="photo-drop-ico">📷</div>
-              <div class="photo-drop-txt"><span>사진 선택</span> 또는 카메라로 촬영</div>
+            <div class="photo-btn-row">
+              <button type="button" class="photo-src-btn" onclick="openFile('file-noEntry','camera')">📷 카메라 촬영</button>
+              <button type="button" class="photo-src-btn" onclick="openFile('file-noEntry','gallery')">🖼 갤러리 선택</button>
             </div>
+            <input type="file" id="file-noEntry" accept="image/*" style="display:none" onchange="previewPhoto(this,'prev-noEntry','file-noEntry')">
             <div class="photo-preview" id="prev-noEntry">
               <img id="prev-noEntry-img" src="" alt="미리보기">
-              <button type="button" class="photo-del" onclick="removePhoto('file-noEntry','prev-noEntry','drop-noEntry')">✕ 삭제</button>
+              <button type="button" class="photo-del" onclick="removePhotoNew('file-noEntry','prev-noEntry')">✕ 삭제</button>
             </div>
           </div>
         </div>
@@ -239,14 +236,14 @@
         <div class="cond" id="cond-partialMemoPhoto">
           <div class="photo-upload">
             <span class="photo-label">📷 현장 사진 등록 (1장)</span>
-            <div class="photo-drop" id="drop-partialMemo">
-              <input type="file" id="file-partialMemo" accept="image/*" capture="environment" onchange="previewPhoto(this,'prev-partialMemo','drop-partialMemo')">
-              <div class="photo-drop-ico">📷</div>
-              <div class="photo-drop-txt"><span>사진 선택</span> 또는 카메라로 촬영</div>
+            <div class="photo-btn-row">
+              <button type="button" class="photo-src-btn" onclick="openFile('file-partialMemo','camera')">📷 카메라 촬영</button>
+              <button type="button" class="photo-src-btn" onclick="openFile('file-partialMemo','gallery')">🖼 갤러리 선택</button>
             </div>
+            <input type="file" id="file-partialMemo" accept="image/*" style="display:none" onchange="previewPhoto(this,'prev-partialMemo','file-partialMemo')">
             <div class="photo-preview" id="prev-partialMemo">
               <img id="prev-partialMemo-img" src="" alt="미리보기">
-              <button type="button" class="photo-del" onclick="removePhoto('file-partialMemo','prev-partialMemo','drop-partialMemo')">✕ 삭제</button>
+              <button type="button" class="photo-del" onclick="removePhotoNew('file-partialMemo','prev-partialMemo')">✕ 삭제</button>
             </div>
           </div>
         </div>
@@ -287,14 +284,14 @@
       <div class="cond" id="cond-emergencyPhoto">
         <div class="field" style="margin-bottom:0">
           <span class="photo-label">📷 현장 사진 등록 (1장)</span>
-          <div class="photo-drop" id="drop-emergency">
-            <input type="file" id="file-emergency" accept="image/*" capture="environment" onchange="previewPhoto(this,'prev-emergency','drop-emergency')">
-            <div class="photo-drop-ico">📷</div>
-            <div class="photo-drop-txt"><span>사진 선택</span> 또는 카메라로 촬영</div>
+          <div class="photo-btn-row">
+            <button type="button" class="photo-src-btn" onclick="openFile('file-emergency','camera')">📷 카메라 촬영</button>
+            <button type="button" class="photo-src-btn" onclick="openFile('file-emergency','gallery')">🖼 갤러리 선택</button>
           </div>
+          <input type="file" id="file-emergency" accept="image/*" style="display:none" onchange="previewPhoto(this,'prev-emergency','file-emergency')">
           <div class="photo-preview" id="prev-emergency">
             <img id="prev-emergency-img" src="" alt="미리보기">
-            <button type="button" class="photo-del" onclick="removePhoto('file-emergency','prev-emergency','drop-emergency')">✕ 삭제</button>
+            <button type="button" class="photo-del" onclick="removePhotoNew('file-emergency','prev-emergency')">✕ 삭제</button>
           </div>
         </div>
       </div>
@@ -373,20 +370,27 @@
     }
 
     /* ── PHOTO ────────────────────────────────── */
-    function previewPhoto(input,previewId,dropId){
+    function openFile(fileId, mode){
+      const input=document.getElementById(fileId);
+      if(mode==='camera'){
+        input.setAttribute('capture','environment');
+      } else {
+        input.removeAttribute('capture');
+      }
+      input.click();
+    }
+    function previewPhoto(input,previewId){
       const file=input.files[0]; if(!file) return;
       const reader=new FileReader();
       reader.onload=ev=>{
         document.getElementById(previewId+'-img').src=ev.target.result;
         document.getElementById(previewId).style.display='block';
-        document.getElementById(dropId).style.display='none';
       };
       reader.readAsDataURL(file);
     }
-    function removePhoto(fileId,previewId,dropId){
+    function removePhotoNew(fileId,previewId){
       document.getElementById(fileId).value='';
       document.getElementById(previewId).style.display='none';
-      document.getElementById(dropId).style.display='block';
     }
     function getPhotoBase64(fileId){
       return new Promise(resolve=>{
@@ -518,9 +522,9 @@
       document.getElementById('emergencyContent').value='';
       document.getElementById('recommendService').value='';
       setDeliveryTime();
-      removePhoto('file-noEntry','prev-noEntry','drop-noEntry');
-      removePhoto('file-partialMemo','prev-partialMemo','drop-partialMemo');
-      removePhoto('file-emergency','prev-emergency','drop-emergency');
+      removePhotoNew('file-noEntry','prev-noEntry');
+      removePhotoNew('file-partialMemo','prev-partialMemo');
+      removePhotoNew('file-emergency','prev-emergency');
       toggleCond('cond-emergencyPhoto', false);
       Object.keys(S).forEach(k=>S[k]=null);
       document.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('ay','an'));
